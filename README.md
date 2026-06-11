@@ -50,7 +50,7 @@ Architecture
 │   Neo4j Graph   │   │  GraphSAGE GNN     │  │  Vertex AI      │
 │                 │   │                    │  │  Gemini         │
 │ • 800K+ nodes   │   │ • Displacement     │  │                 │
-│ • 55M+ edges    │   │   risk head        │  │ • Fable 5       │
+│ • 55M+ edges    │   │   risk head        │  │ • Gemini        │
 │ • Atlanta MSA   │   │ • Per-bedroom      │  │   orchestration │
 │ • Amsterdam     │   │   rent heads       │  │ • Adaptive      │
 │   metro (675K   │   │ • AUC 0.9966       │  │   thinking      │
@@ -67,7 +67,7 @@ Market Synthesis Agent	Submarket narrative, displacement trajectory, LIHTC sprea
 Key Design Decisions
 Graph-native retrieval as moat. The Neo4j property graph is not a cache — it is the primary analytical substrate. Ownership traversal (nested SPE chains), displacement wave propagation (seed-and-spread diffusion), and assemblage detection (fragmented parcel clustering) are structurally unanswerable by row-based databases regardless of scale.
 GNN as forward signal, not lookup. The GraphSAGE model (shared encoder + per-year rent heads + displacement risk head) encodes spatial network topology into embeddings. Predictions carry k-fold CV confidence intervals. The Amsterdam graph (675K pand polygons, AUC 0.9966) was trained and validated using spatial 5-fold cross-validation to prevent geographic leakage.
-Adaptive reasoning via Fable 5. The decision engine uses Claude Fable 5 as the orchestration layer for multi-stage feasibility verdicts. Adaptive thinking allocates reasoning depth automatically based on task complexity — short lookups get fast responses; multi-step assemblage analysis triggers deeper reasoning chains.
+Adaptive reasoning via Claude. The decision engine uses Gemini as the orchestration layer for multi-stage feasibility verdicts. Adaptive thinking allocates reasoning depth automatically based on task complexity — short lookups get fast responses; multi-step assemblage analysis triggers deeper reasoning chains.
 Voice-grounded spatial query. The Vapi voice interface accepts natural language property addresses, handles speech-to-text normalization (spoken "Mitchell Street" → abbreviated "MITCHELL ST SW" for county record matching), and returns structured audio + dashboard updates simultaneously.
 ---
 Tech Stack
@@ -75,7 +75,7 @@ Layer	Technology
 Cloud platform	Google Cloud Platform (GCP)
 Agent framework	Google ADK · Vertex AI Agent Engine
 Agent protocol	A2A (Agent-to-Agent) · MCP
-LLM / reasoning	Vertex AI Gemini · Claude Fable 5 (Anthropic API)
+LLM / reasoning	Vertex AI Gemini · Claude (Anthropic API)
 Graph database	Neo4j AuraDB
 GNN	PyTorch Geometric · GraphSAGE
 Backend	FastAPI · Python 3.11 · Cloud Run
@@ -161,7 +161,7 @@ Google ADK — Agent Development Kit
 Vertex AI — Model hosting and agent engine
 Neo4j — Graph database (startup program)
 PyTorch Geometric — GNN training
-Claude Fable 5 — Adaptive reasoning orchestration
+Claude — Adaptive reasoning orchestration
 Vapi — Voice AI interface
 Mapbox GL JS — 3D spatial visualization
 ---
