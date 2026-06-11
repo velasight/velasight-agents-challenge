@@ -13,6 +13,7 @@ What is the forward-looking LIHTC rent spread compression for this census tract?
 These are graph-native question classes. Velasight answers them through a combination of a Neo4j property graph (800K+ nodes, 55M+ edges), a trained GraphSAGE GNN, and a multi-agent reasoning architecture built on Google Cloud ADK and Vertex AI.
 ---
 Architecture
+![Architecture Diagram](architecture_diagram_final.svg)
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │                        User Interface                            │
