@@ -1,0 +1,6 @@
+address,parcel_id,school_gradient,noi_growth_12mo,income_migration_12mo,lien_density,street_entropy,displacement_risk,lihtc_eligibility
+44 Broad St NW,14-0078-0011-058-3,0.45,0.82,0.78,0.15,0.85,0.88,0.0
+400 Northside Dr NW,14-0082-0005-077-5,0.35,0.65,0.92,0.65,0.60,0.95,1.0
+165 Peachtree St SW,14-0077-0006-107-6,0.40,0.75,0.80,0.45,0.75,0.70,1.0
+377 Centennial Olympic Park,14-0079-0011-057-4,0.50,0.88,0.85,0.10,0.80,0.60,0.0
+384 Peachtree St NE,14-0050-0007-056-5,0.65,0.90,0.88,0.05,0.90,0.50,0.0

@@ -1,0 +1,119 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* THE VELVET PLUM LUXURY THEME */
+  --bg-base: #2B1038;      /* Deep Plum */
+  --bg-surface: #3A1548;   /* Velvet Plum */
+  --bg-elevated: #241230;  /* Midnight Grape */
+  --bg-panel: #1E1022;     /* Aubergine blend */
+  
+  /* Silver/Metallic Borders */
+  --border-subtle: rgba(195, 205, 220, 0.15); 
+  --border-strong: rgba(195, 205, 220, 0.35);
+  
+  /* Light text for dark mode */
+  --text-primary: #FDF8F5;
+  --text-secondary: rgba(253, 248, 245, 0.7);
+  --text-muted: rgba(253, 248, 245, 0.4);
+  --text-pro-locked: #8A7A90; /* Muted purple-grey for locked items */
+  
+  /* Claude's Siriwave Accents */
+  --accent-teal: #4FC3F7;  /* Light Blue */
+  --accent-amber: #F58A23; /* Electric Orange */
+}
+
+html, body, #root {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-base) !important;
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Typography & Base Styles ── */
+.font-display { font-family: 'Syne', sans-serif; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+
+/* ── Custom Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ── Element Cards (The 20 Grid Items) ── */
+.element-card {
+  position: relative;
+  border-radius: 8px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 90px;
+}
+
+/* Specific styling for ACTIVE cards */
+.element-card-active {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--border-subtle);
+}
+
+.element-card-active:hover {
+  border-color: var(--accent-amber);
+  box-shadow: 0 0 15px rgba(255, 140, 115, 0.3);
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+/* Specific styling for LOCKED cards (Easier to read) */
+.element-card-locked {
+  background: rgba(42, 31, 29, 0.03); /* subtle dark background hint */
+  border: 1px solid rgba(140, 110, 100, 0.08); /* VERY subtle border */
+  opacity: 0.6; /* not faded to zero, still visible but clearly distinct */
+}
+
+.element-symbol { font-size: 1.5rem; font-weight: 600; color: var(--text-primary); letter-spacing: -0.02em; }
+.element-name { font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-top: 4px; }
+.element-value { font-family: var(--font-mono); font-size: 1.1rem; color: var(--text-primary); align-self: flex-end; }
+.element-weight { font-family: var(--font-mono); font-size: 1.1rem; color: var(--accent-teal); align-self: flex-end; }
+
+/* ── Pulse Animation for Network Dot ── */
+.pulse-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.7);
+  animation: pulse-ring 2s infinite cubic-bezier(0.66, 0, 0, 1);
+}
+
+@keyframes pulse-ring {
+  to { box-shadow: 0 0 0 10px rgba(20, 184, 166, 0); }
+}
+
+/* ── FILMORA CONVERSATION AESTHETIC ── */
+/* Specifically for the chat log: dark background, peach text */
+.filmora-chat-container {
+  background: #111111;
+  border: 1px solid var(--accent-amber);
+  border-radius: 8px;
+  padding: 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent-amber); /* Peach text */
+  box-shadow: 0 0 20px rgba(255, 140, 115, 0.2);
+}
+
+.filmora-chat-timestamp {
+  color: #64748B;
+  margin-right: 8px;
+}
+
+.filmora-chat-user {
+  color: #F87171; /* specific color for user text in log */
+}
+
+.filmora-chat-analyzing {
+  color: var(--accent-teal); /* specific color for analyzing text in log */
+}

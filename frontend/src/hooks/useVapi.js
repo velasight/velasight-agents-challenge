@@ -1,0 +1,249 @@
+import { useEffect, useRef, useCallback } from 'react'
+import Vapi from '@vapi-ai/web'
+import { useExploreStore } from '../store'
+import { handleVapiToolCall } from '../api/velasight'
+
+const VAPI_PUBLIC_KEY = import.meta.env.VITE_VAPI_PUBLIC_KEY
+const VAPI_ASSISTANT_ID = import.meta.env.VITE_VAPI_ASSISTANT_ID
+
+// ─────────────────────────────────────────────────────────────────────
+// Module-level singleton. Multiple <VoiceBar /> instances can now share
+// ONE Vapi client. Without this, every component that called useVapi()
+// created a new Vapi instance, duplicate event listeners, and competing
+// WebSocket connections. That is why VoiceBar was previously removed
+// from the map page — it is safe to put back now.
+// ─────────────────────────────────────────────────────────────────────
+let vapiSingleton = null
+let listenersAttached = false
+// lastAnalyzedAddress moved to Zustand store
+function getVapi() {
+  if (!vapiSingleton) {
+    vapiSingleton = new Vapi(VAPI_PUBLIC_KEY)
+  }
+  return vapiSingleton
+}
+
+export function useVapi() {
+  const mapTimeoutRef = useRef(null)
+
+  const {
+    setVoiceActive, setVoiceTranscript, setVoiceResponse,
+    setVapiConnected, setSiteAnalysis, setMapCenter, setMapZoom
+  } = useExploreStore()
+
+  useEffect(() => {
+    const vapi = getVapi()
+
+    // Only the FIRST useVapi() call on the page wires up event listeners.
+    // Subsequent calls (e.g. a second <VoiceBar /> on the map page) just
+    // reuse the same client and dispatch their start/stop against it.
+    if (listenersAttached) return
+    listenersAttached = true
+
+    vapi.on('call-start', () => { setVapiConnected(true); setVoiceResponse(''); })
+    vapi.on('call-end', () => { setVapiConnected(false); setVoiceActive(false) })
+    vapi.on('speech-start', () => setVoiceActive(true))
+    vapi.on('speech-end', () => setVoiceActive(false))
+    vapi.on('volume-level', (level) => useExploreStore.setState({ volumeLevel: level }))
+
+    vapi.on('message', async (msg) => {
+      try {
+        if (msg.type === 'transcript') {
+          if (msg.role === 'user') setVoiceTranscript(msg.transcript)
+        }
+
+        if (msg.type === 'transcript' && msg.transcriptType === 'final' && msg.role === 'assistant') {
+          setVoiceResponse(prev => prev ? prev + ' ' + msg.transcript : msg.transcript);
+        }
+
+        if (msg.type === 'tool-calls') {
+          // Vapi's assistant sometimes issues multiple tool calls per turn
+          // (the primary analysis plus an unsolicited "comparable property"
+          // lookup). We cannot trust arrival order — network timing can put
+          // a comparable lookup ahead of the user's actual query. Instead,
+          // scan the whole batch and pick the first primary-intent tool
+          // call. Every tool call still executes and still sends its
+          // result back to Vapi; only UI state is driven by the primary.
+          const PRIMARY_TOOLS = ['query_property_graph', 'get_site_analysis', 'get_property_analysis', 'update_dashboard']
+
+          // Decide up front WHICH tool call (if any) drives the UI this turn.
+          const primaryToolCallId = (msg.toolCalls || []).find(
+            tc => PRIMARY_TOOLS.includes(tc.function.name)
+          )?.id
+
+          for (const toolCall of (msg.toolCalls || [])) {
+            const funcName = toolCall.function.name
+
+            const argsForBackend = typeof toolCall.function.arguments === 'string'
+              ? JSON.parse(toolCall.function.arguments || '{}')
+              : toolCall.function.arguments || {};
+            if (funcName === 'get_property_analysis' && argsForBackend.address) { useExploreStore.setState({ lastAnalyzedAddress: argsForBackend.address }); }
+            const lastAnalyzedAddress = useExploreStore.getState().lastAnalyzedAddress
+            const enrichedArgs = (funcName === 'update_dashboard' && lastAnalyzedAddress) ? { ...argsForBackend, address: lastAnalyzedAddress } : argsForBackend;
+            try {
+              const result = await handleVapiToolCall(funcName, enrichedArgs)
+            if (funcName === 'get_property_analysis' && result.summary) { useExploreStore.setState({ voiceResponse: result.summary }); }
+              if (toolCall.id === primaryToolCallId) {
+
+                if (result.lng && result.lat) {
+                  if (mapTimeoutRef.current) clearTimeout(mapTimeoutRef.current);
+                  mapTimeoutRef.current = setTimeout(() => {
+                    console.log("📍 Cinematic Map Flight Initiated");
+                    setMapCenter([result.lng, result.lat]);
+                    setMapZoom(16);
+                  }, 800);
+                }
+
+                // ─── BACKEND VALUES (slots 0-9) ─────────────────────────
+                //
+                // CRITICAL: slot order MUST match store.js BACKEND_KPI_ORDER
+                // and the first 10 entries of KPI_DEFS. If you change one,
+                // change all three. Mismatches cause KPI values to render
+                // against the wrong labels.
+                //
+                // Current order:
+                //   [0] cap_rate_delta     (Cap rate δ)
+                //   [1] transit_centrality (Transit centrality)
+                //   [2] noi_growth         (NOI growth)
+                //   [3] income_migration   (Income migration)
+                //   [4] displacement_risk  (Displacement risk)
+                //   [5] lihtc_eligibility  (LIHTC eligibility)
+                //   [6] (retail gravity — not in backend yet, leave default)
+                //   [7] street_entropy     (Street entropy)
+                //   [8] lien_density       (Lien density)
+                //   [9] school_gradient    (School gradient)
+                //
+                const kpi = result.kpi || {};
+                const kpiArray = new Array(28).fill(0.1);
+                const rawArray = new Array(28).fill('---');
+
+                kpiArray[0] = kpi.cap_rate_delta     ?? 0.5;
+                kpiArray[1] = kpi.transit_centrality ?? 0.5;
+                kpiArray[2] = kpi.noi_growth         ?? 0.5;
+                kpiArray[3] = kpi.income_migration   ?? 0.5;
+                kpiArray[4] = kpi.displacement_risk  ?? 0.5;
+                kpiArray[5] = kpi.lihtc_eligibility  ?? 0.5;
+                // kpiArray[6] = retail gravity — roadmap KPI, leave at default
+                kpiArray[7] = kpi.street_entropy     ?? 0.5;
+                kpiArray[8] = kpi.lien_density       ?? 0.5;
+                kpiArray[9] = kpi.school_gradient    ?? 0.5;
+
+                // ─── DECORATIVE "ENTERPRISE MATRIX" SLOTS (10-19) ──────
+                // These are periodic-table filler. Not yet wired to backend
+                // — kept as realistic placeholders for visual completeness.
+                kpiArray[10] = 0.25; // Crime density
+                kpiArray[11] = 0.15; // Flood risk
+                kpiArray[12] = 0.70; // Substation proximity
+                kpiArray[13] = 0.95; // Dark fiber
+                kpiArray[14] = 0.20; // Water stress
+                kpiArray[15] = 0.40; // Acoustic / NIMBY
+                kpiArray[16] = 0.85; // Healthcare gravity
+                kpiArray[17] = 0.60; // Demographic aging
+                kpiArray[18] = 0.50; // Supply saturation
+                kpiArray[19] = 0.75; // RLV yield
+
+                // ─── RAW DISPLAY STRINGS ────────────────────────────────
+                // cap_rate_delta: backend [0,1] where 0.5 = market-neutral.
+                // Map to +/- 500 bps so a 0.7 reads as "+200 bps".
+                const capRateDeltaBps = Math.round((kpiArray[0] - 0.5) * 1000);
+                rawArray[0] = `${capRateDeltaBps >= 0 ? '+' : ''}${capRateDeltaBps} bps`;
+
+                // transit_centrality: betweenness multiple vs submarket median
+                rawArray[1] = `${(kpiArray[1] * 10).toFixed(1)}x`;
+
+                // noi_growth: annualized % growth (max ~8%)
+                rawArray[2] = `${(kpiArray[2] * 8).toFixed(1)}%`;
+
+                // income_migration: $ delta vs tract baseline (max ~$15k)
+                rawArray[3] = `+$${Math.round(kpiArray[3] * 15000).toLocaleString()}`;
+
+                // displacement_risk: qualitative band
+                rawArray[4] = kpiArray[4] < 0.30 ? 'Low'
+                           : kpiArray[4] < 0.60 ? 'Medium'
+                           : kpiArray[4] < 0.85 ? 'High'
+                           : 'Peak';
+
+                // lihtc_eligibility: qualitative band
+                rawArray[5] = kpiArray[5] > 0.70 ? 'Eligible'
+                           : kpiArray[5] > 0.40 ? 'Marginal'
+                           : 'Ineligible';
+
+                // retail gravity — roadmap
+                rawArray[6] = '—';
+
+                // street_entropy: 0-100 urban-grid regularity index
+                rawArray[7] = `${(kpiArray[7] * 100).toFixed(0)} Index`;
+
+                // lien_density: per-square-mile proxy
+                rawArray[8] = `${(kpiArray[8] * 10).toFixed(1)}/sqmi`;
+
+                // school_gradient: Top N% band
+                rawArray[9] = `Top ${(100 - kpiArray[9] * 100).toFixed(0)}%`;
+
+                // Decorative slots — static raw strings
+                rawArray[10] = `Low`;
+                rawArray[11] = `Zone X`;
+                rawArray[12] = `0.4 mi`;
+                rawArray[13] = `<2ms`;
+                rawArray[14] = `Low`;
+                rawArray[15] = `45 dB`;
+                rawArray[16] = `High`;
+                rawArray[17] = `+2.1%`;
+                rawArray[18] = `Balanced`;
+                rawArray[19] = `+120 bps`;
+
+                // Pass the full backend response through so downstream
+                // consumers (Decoder tab, KPI quality badges) can read
+                // verdict / reasoning / kpi_data_quality / etc.
+                setTimeout(() => {
+                  setSiteAnalysis({
+                    ...result,
+                    kpi_values: kpiArray,
+                    kpi_raw_values: rawArray,
+                    summary: result.summary || result.ai_analysis_report || ''
+                  });
+                  if (funcName === 'get_property_analysis') window.dispatchEvent(new CustomEvent('velasight:analysis-ready'));
+                }, 1200);
+              }
+              vapi.send({ type: 'add-message', message: { role: 'tool', tool_call_id: toolCall.id, name: funcName, content: JSON.stringify(result) } })
+            } catch (err) {
+              console.error('Tool Call Error:', err);
+              vapi.send({ type: 'add-message', message: { role: 'tool', tool_call_id: toolCall.id, name: funcName, content: JSON.stringify({ error: err.message }) } })
+            }
+          }
+        }
+      } catch (criticalError) { console.error("💥 BLOCKED:", criticalError) }
+    })
+
+    // Deliberately no cleanup — the singleton persists across unmounts
+    // so a cross-page navigation does not kill an active voice call.
+  }, [])
+
+  const startCall = useCallback(async () => {
+    const vapi = getVapi()
+    if (!VAPI_ASSISTANT_ID) return
+    try {
+      await vapi.start(VAPI_ASSISTANT_ID)
+    } catch (err) {
+      setVapiConnected(false)
+      setVoiceActive(false)
+    }
+  }, [])
+
+  const stopCall = useCallback(() => {
+    const vapi = getVapi()
+    if (vapi) vapi.stop()
+    setVapiConnected(false)
+    setVoiceActive(false)
+  }, [])
+
+  return { startCall, stopCall }
+}
+
+
+
+
+
+
+
+

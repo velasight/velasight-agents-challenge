@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+  api:
+    build: ./backend
+    ports:
+      - "8000:8080"
+    env_file:
+      - ./backend/.env
+    environment:
+      - PORT=8080
+    volumes:
+      - ./backend:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8080 --reload
+    restart: unless-stopped
+
+  ui:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: http://localhost:8000/api/v1
+    ports:
+      - "5173:8080"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+# For local Neo4j development (optional — use your existing cloud instance instead)
+# neo4j:
+#   image: neo4j:5.21-enterprise
+#   ports:
+#     - "7474:7474"
+#     - "7687:7687"
+#   environment:
+#     NEO4J_AUTH: neo4j/password
+#     NEO4J_PLUGINS: '["graph-data-science"]'
+#   volumes:
+#     - neo4j_data:/data
+
+# volumes:
+#   neo4j_data:
