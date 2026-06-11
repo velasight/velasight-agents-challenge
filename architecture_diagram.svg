@@ -1,0 +1,123 @@
+<svg viewBox="0 0 900 640" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono', 'Courier New', monospace" role="img">
+  <title>Velasight A2A Multi-Agent Architecture</title>
+  <desc>Google ADK orchestrator delegates to three sub-agents via A2A protocol. Agents call tools over MCP. Tools connect to Neo4j graph, GraphSAGE GNN, and Vertex AI Gemini. Voice layer via Vapi, 3D frontend via React/Mapbox.</desc>
+
+  <rect width="900" height="640" fill="#1C1005"/>
+
+  <!-- Title -->
+  <text x="450" y="34" text-anchor="middle" font-size="14" font-weight="500" fill="#D4A96A" letter-spacing="2">VELASIGHT · DECISION INTELLIGENCE ARCHITECTURE</text>
+  <text x="450" y="52" text-anchor="middle" font-size="10" fill="#5A4430" letter-spacing="1">Google ADK · A2A Protocol · Vertex AI · Neo4j · GraphSAGE GNN</text>
+
+  <!-- ═══════════════════ LAYER 1: UI ═══════════════════ -->
+  <rect x="60" y="70" width="780" height="64" rx="6" fill="#241508" stroke="#3A2A18" stroke-width="0.8"/>
+  <text x="450" y="91" text-anchor="middle" font-size="10" fill="#5A4430" letter-spacing="1">USER INTERFACE LAYER</text>
+  <rect x="120" y="98" width="160" height="26" rx="4" fill="#2A1A08" stroke="#D4A96A" stroke-width="0.6"/>
+  <text x="200" y="115" text-anchor="middle" font-size="10" fill="#D4A96A">React · Vite · Mapbox GL</text>
+  <rect x="310" y="98" width="160" height="26" rx="4" fill="#2A1A08" stroke="#4A9ECF" stroke-width="0.6"/>
+  <text x="390" y="115" text-anchor="middle" font-size="10" fill="#4A9ECF">Vapi Voice Interface</text>
+  <rect x="500" y="98" width="160" height="26" rx="4" fill="#2A1A08" stroke="#9B7FD4" stroke-width="0.6"/>
+  <text x="580" y="115" text-anchor="middle" font-size="10" fill="#9B7FD4">Zustand State · Export PDF</text>
+  <rect x="690" y="98" width="100" height="26" rx="4" fill="#2A1A08" stroke="#5DB88A" stroke-width="0.6"/>
+  <text x="740" y="115" text-anchor="middle" font-size="10" fill="#5DB88A">3D Spider KPI</text>
+
+  <!-- Arrow UI → Orchestrator -->
+  <line x1="450" y1="134" x2="450" y2="154" stroke="#3A2A18" stroke-width="1" stroke-dasharray="4,2"/>
+  <polygon points="445,152 455,152 450,158" fill="#3A2A18"/>
+
+  <!-- ═══════════════════ LAYER 2: ORCHESTRATOR ═══════════════════ -->
+  <rect x="200" y="158" width="500" height="72" rx="6" fill="#1A2A20" stroke="#5DB88A" stroke-width="1"/>
+  <text x="450" y="177" text-anchor="middle" font-size="10" fill="#2A6040" letter-spacing="1">ORCHESTRATOR AGENT</text>
+  <text x="450" y="193" text-anchor="middle" font-size="11" font-weight="500" fill="#9FE1CB">Google ADK · Vertex AI Agent Engine · A2A Protocol</text>
+  <text x="450" y="213" text-anchor="middle" font-size="10" fill="#3A8060">Query routing · workflow coordination · multi-stage synthesis · Fable 5 adaptive thinking</text>
+
+  <!-- A2A arrows down to sub-agents -->
+  <line x1="290" y1="230" x2="200" y2="268" stroke="#5DB88A" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="450" y1="230" x2="450" y2="268" stroke="#5DB88A" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="610" y1="230" x2="700" y2="268" stroke="#5DB88A" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="290" y="252" text-anchor="middle" font-size="8" fill="#2A6040">A2A</text>
+  <text x="450" y="252" text-anchor="middle" font-size="8" fill="#2A6040">A2A</text>
+  <text x="610" y="252" text-anchor="middle" font-size="8" fill="#2A6040">A2A</text>
+
+  <!-- ═══════════════════ LAYER 3: SUB-AGENTS ═══════════════════ -->
+  <!-- Spatial Network Analyst -->
+  <rect x="60" y="268" width="220" height="92" rx="6" fill="#0C1E2E" stroke="#4A9ECF" stroke-width="0.8"/>
+  <text x="170" y="287" text-anchor="middle" font-size="9" fill="#1A4060" letter-spacing="1">SPATIAL NETWORK ANALYST</text>
+  <text x="170" y="302" text-anchor="middle" font-size="10" font-weight="500" fill="#85B7EB">Graph Traversal Agent</text>
+  <text x="85" y="320" font-size="9" fill="#3A6080">· Tobler ring-buffer analysis</text>
+  <text x="85" y="334" font-size="9" fill="#3A6080">· SPE ownership chain resolution</text>
+  <text x="85" y="348" font-size="9" fill="#3A6080">· Assemblage detection</text>
+
+  <!-- Underwriting Agent -->
+  <rect x="340" y="268" width="220" height="92" rx="6" fill="#1E1808" stroke="#D4A96A" stroke-width="0.8"/>
+  <text x="450" y="287" text-anchor="middle" font-size="9" fill="#5A4020" letter-spacing="1">UNDERWRITING AGENT</text>
+  <text x="450" y="302" text-anchor="middle" font-size="10" font-weight="500" fill="#FAC775">Decision Engine</text>
+  <text x="355" y="320" font-size="9" fill="#806040">· Monte Carlo uncertainty propagation</text>
+  <text x="355" y="334" font-size="9" fill="#806040">· MCDA aggregation · Dirichlet weights</text>
+  <text x="355" y="348" font-size="9" fill="#806040">· IRR / DSCR / LTV / Value of Info</text>
+
+  <!-- Market Synthesis Agent -->
+  <rect x="620" y="268" width="220" height="92" rx="6" fill="#200E20" stroke="#9B7FD4" stroke-width="0.8"/>
+  <text x="730" y="287" text-anchor="middle" font-size="9" fill="#502060" letter-spacing="1">MARKET SYNTHESIS AGENT</text>
+  <text x="730" y="302" text-anchor="middle" font-size="10" font-weight="500" fill="#C8A0F0">Narrative + Verdict</text>
+  <text x="635" y="320" font-size="9" fill="#705090">· Submarket trajectory narrative</text>
+  <text x="635" y="334" font-size="9" fill="#705090">· LIHTC spread compression analysis</text>
+  <text x="635" y="348" font-size="9" fill="#705090">· Pass / Monitor / Flag verdicts</text>
+
+  <!-- MCP arrows down to tool layer -->
+  <line x1="170" y1="360" x2="170" y2="394" stroke="#3A2A18" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <line x1="450" y1="360" x2="450" y2="394" stroke="#3A2A18" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <line x1="730" y1="360" x2="730" y2="394" stroke="#3A2A18" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <text x="170" y="381" text-anchor="middle" font-size="8" fill="#3A2A18">MCP</text>
+  <text x="450" y="381" text-anchor="middle" font-size="8" fill="#3A2A18">MCP</text>
+  <text x="730" y="381" text-anchor="middle" font-size="8" fill="#3A2A18">MCP</text>
+
+  <!-- ═══════════════════ LAYER 4: TOOLS ═══════════════════ -->
+  <rect x="60" y="394" width="780" height="58" rx="6" fill="#241508" stroke="#3A2A18" stroke-width="0.8"/>
+  <text x="450" y="413" text-anchor="middle" font-size="9" fill="#5A4430" letter-spacing="1">TOOL LAYER</text>
+  <text x="140" y="432" text-anchor="middle" font-size="9" fill="#8A6040">get_property_analysis</text>
+  <text x="290" y="432" text-anchor="middle" font-size="9" fill="#8A6040">query_property_graph</text>
+  <text x="440" y="432" text-anchor="middle" font-size="9" fill="#8A6040">execute_playbook</text>
+  <text x="590" y="432" text-anchor="middle" font-size="9" fill="#8A6040">consult_market_analyst</text>
+  <text x="760" y="432" text-anchor="middle" font-size="9" fill="#8A6040">update_dashboard</text>
+  <text x="140" y="444" text-anchor="middle" font-size="8" fill="#5A4030">gnn_inference_endpoint</text>
+  <text x="440" y="444" text-anchor="middle" font-size="8" fill="#5A4030">decision_engine</text>
+
+  <!-- Arrows down to data layer -->
+  <line x1="220" y1="452" x2="180" y2="482" stroke="#3A2A18" stroke-width="0.6"/>
+  <line x1="450" y1="452" x2="450" y2="482" stroke="#3A2A18" stroke-width="0.6"/>
+  <line x1="680" y1="452" x2="720" y2="482" stroke="#3A2A18" stroke-width="0.6"/>
+
+  <!-- ═══════════════════ LAYER 5: DATA ═══════════════════ -->
+  <!-- Neo4j -->
+  <rect x="60" y="482" width="230" height="120" rx="6" fill="#0C1808" stroke="#5DB88A" stroke-width="0.8"/>
+  <text x="175" y="501" text-anchor="middle" font-size="9" fill="#1A4020" letter-spacing="1">NEO4J PROPERTY GRAPH</text>
+  <text x="175" y="516" text-anchor="middle" font-size="10" font-weight="500" fill="#5DB88A">Graph Database</text>
+  <text x="80" y="534" font-size="9" fill="#2A6030">· Atlanta: 800K nodes · 55M edges</text>
+  <text x="80" y="548" font-size="9" fill="#2A6030">· Amsterdam: 675K pand polygons</text>
+  <text x="80" y="562" font-size="9" fill="#2A6030">· Ownership · Parcel · CensusTract</text>
+  <text x="80" y="576" font-size="9" fill="#2A6030">· Intersection · Market · QCT</text>
+  <text x="80" y="590" font-size="9" fill="#2A6030">· ATTOM · BAG · Kadastrale Kaart</text>
+
+  <!-- GNN -->
+  <rect x="335" y="482" width="230" height="120" rx="6" fill="#1E1808" stroke="#D4A96A" stroke-width="0.8"/>
+  <text x="450" y="501" text-anchor="middle" font-size="9" fill="#5A4020" letter-spacing="1">GRAPHSAGE GNN</text>
+  <text x="450" y="516" text-anchor="middle" font-size="10" font-weight="500" fill="#D4A96A">Spatial Intelligence Model</text>
+  <text x="350" y="534" font-size="9" fill="#806040">· Shared encoder + task heads</text>
+  <text x="350" y="548" font-size="9" fill="#806040">· Displacement risk head (R² 0.65)</text>
+  <text x="350" y="562" font-size="9" fill="#806040">· Per-bedroom rent heads (0BR–4BR)</text>
+  <text x="350" y="576" font-size="9" fill="#806040">· Amsterdam AUC 0.9966</text>
+  <text x="350" y="590" font-size="9" fill="#806040">· Spatial 5-fold CV · 0.988 ± 0.013</text>
+
+  <!-- Vertex AI -->
+  <rect x="610" y="482" width="230" height="120" rx="6" fill="#160820" stroke="#9B7FD4" stroke-width="0.8"/>
+  <text x="725" y="501" text-anchor="middle" font-size="9" fill="#401860" letter-spacing="1">VERTEX AI · GEMINI</text>
+  <text x="725" y="516" text-anchor="middle" font-size="10" font-weight="500" fill="#9B7FD4">Reasoning Layer</text>
+  <text x="625" y="534" font-size="9" fill="#604080">· Claude Fable 5 orchestration</text>
+  <text x="625" y="548" font-size="9" fill="#604080">· Adaptive thinking (always-on)</text>
+  <text x="625" y="562" font-size="9" fill="#604080">· Gemini agent engine</text>
+  <text x="625" y="576" font-size="9" fill="#604080">· GCP-native · Cloud Run</text>
+  <text x="625" y="590" font-size="9" fill="#604080">· VPC Service Controls</text>
+
+  <!-- Footer -->
+  <text x="450" y="628" text-anchor="middle" font-size="9" fill="#3A2A18">Velasight · Atlanta, GA · Google Cloud for Startups AI Agents Challenge 2026 · GCP-native · Neo4j Startup Program</text>
+</svg>
