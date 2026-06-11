@@ -139,7 +139,7 @@ DC suitability — top operators identified	Digital Realty 17 · Equinix 15 · N
 ---
 Local Setup
 ```bash
-git clone https://github.com/[your-handle]/velasight-agents-challenge
+git clone https://github.com/velasight/velasight-agents-challenge
 cd velasight-agents-challenge
 pip install -r requirements.txt
 ```
